@@ -1,11 +1,20 @@
+import 'dart:convert';
+
+import 'package:bzinga/authentication/models/verifyMobileOtp.dart';
 import 'package:bzinga/colors.dart';
+import 'package:bzinga/constants.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
+
+import 'models/registerMobileNumber.dart';
 
 class VerifyOtp extends StatefulWidget {
-  String mobileNumber;
+  final String mobilenumber;
+  final RegisterMobile mobile;
 
-  VerifyOtp({Key key, this.mobileNumber}) : super(key: key);
+  VerifyOtp({Key key, this.mobile, this.mobilenumber = ''}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -14,12 +23,34 @@ class VerifyOtp extends StatefulWidget {
 }
 
 class VerifyOtpState extends State<VerifyOtp> {
+  final otpController = TextEditingController();
   bool isAccepted = false;
 
   TapGestureRecognizer tapRight = TapGestureRecognizer()
     ..onTap = () {
       print("Clicked GET OTP");
     };
+
+  void verifyOtpCall() async {
+    var requestBody;
+
+    requestBody = RequestBodyOtp(
+      id: widget.mobile.userId,
+      otp: otpController.text,
+      mobile: widget.mobilenumber,
+    );
+
+    var url = Constants.VERIFY_OTP;
+
+    Response res = await http.post(url,
+        headers: {"Content-Type": "application/json"},
+        body: json.encode(requestBody));
+
+    if (res.statusCode == 200) {
+      OtpResponse otpResponse = OtpResponse.fromJson(json.decode(res.body));
+      print(otpResponse);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +64,7 @@ class VerifyOtpState extends State<VerifyOtp> {
                   style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
               Container(
                   padding: EdgeInsets.only(top: 12),
-                  child: Text(widget.mobileNumber)),
+                  child: Text(widget.mobilenumber)),
               Visibility(
                 child: Container(
                   padding: EdgeInsets.only(top: 24, left: 24, right: 24),
@@ -50,6 +81,7 @@ class VerifyOtpState extends State<VerifyOtp> {
                     EdgeInsets.only(top: 16, left: 24, right: 24, bottom: 8),
                 child: TextField(
                   textAlign: TextAlign.center,
+                  controller: otpController,
                   decoration: InputDecoration(
                       hintText: 'Enter OTP here',
                       hintStyle: TextStyle(color: CustomColor.hintColor)),
@@ -71,9 +103,7 @@ class VerifyOtpState extends State<VerifyOtp> {
                 padding: EdgeInsets.only(top: 24, bottom: 16),
                 child: RaisedButton(
                   child: Text('Continue'),
-                  onPressed: () {
-                    print('Clicked');
-                  },
+                  onPressed: verifyOtpCall,
                 ),
               ),
               Row(

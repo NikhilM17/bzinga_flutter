@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:bzinga/authentication/models/login.dart';
+import 'package:bzinga/authentication/models/registerMobileNumber.dart';
 import 'package:bzinga/colors.dart';
 import 'package:bzinga/constants.dart';
 import 'package:bzinga/authentication/VerifyOtp.dart';
@@ -61,7 +61,7 @@ class MobileNumberState extends State<MobileNumber> {
     registerMobileNumber();
   }
 
-  Future<MobileRegisterResponse> registerMobileNumber() async {
+  void registerMobileNumber() async {
     var url = Constants.REGISTER_MOBILE_NUMBER;
 
     print(json.encode(requestBody));
@@ -75,7 +75,10 @@ class MobileNumberState extends State<MobileNumber> {
       if (response != null) {
         if (response.status == 200 && response.data != null) {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => VerifyOtp()));
+              context,
+              MaterialPageRoute(
+                  builder: (context) => VerifyOtp(
+                      mobile: response.data, mobilenumber: myController.text)));
         }
       }
     } else
@@ -142,12 +145,7 @@ class MobileNumberState extends State<MobileNumber> {
                   'GET OTP',
                   style: TextStyle(fontWeight: FontWeight.w900),
                 ),
-                onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => VerifyOtp(
-                            mobileNumber: myController
-                                .text))), //() => fetchDeviceInfo(Platform.isAndroid),
+                onPressed: () => fetchDeviceInfo(Platform.isAndroid),
               ),
             ),
           ],

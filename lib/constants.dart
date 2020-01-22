@@ -7,4 +7,6 @@ class Constants {
 
   static const String REGISTER_MOBILE_NUMBER = BASE_URL + "api/v1/user/register/mobile";
 
+  static const String VERIFY_OTP = BASE_URL + "api/v1/user/verifyotp";
+
 }
