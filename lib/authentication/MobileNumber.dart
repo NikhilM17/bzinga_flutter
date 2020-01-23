@@ -5,6 +5,7 @@ import 'package:bzinga/colors.dart';
 import 'package:bzinga/constants.dart';
 import 'package:bzinga/authentication/VerifyOtp.dart';
 import 'package:device_info/device_info.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
@@ -21,8 +22,18 @@ class MobileNumber extends StatefulWidget {
 
 class MobileNumberState extends State<MobileNumber> {
   var requestBody;
-
   final myController = TextEditingController();
+  String fcmToken;
+  String deviceType = Platform.isAndroid ? 'android' : 'ios';
+
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+  _register() {
+    _firebaseMessaging
+        .getToken()
+        .then((token) => {this.fcmToken = token, print(token)});
+  }
+
   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
   AndroidDeviceInfo androidInfo;
@@ -39,7 +50,7 @@ class MobileNumberState extends State<MobileNumber> {
               deviceName: androidInfo.model,
               deviceKey: androidInfo.id,
               user_agent: androidInfo.product,
-              deviceType: 'android',
+              deviceType: deviceType,
               loggedin_on: new DateTime.now().millisecondsSinceEpoch.toString(),
               androidHash: "xdEGBTEgY7u")
           .toJson();
@@ -53,7 +64,7 @@ class MobileNumberState extends State<MobileNumber> {
               deviceName: iosDeviceInfo.model,
               deviceKey: "",
               user_agent: "",
-              deviceType: 'ios',
+              deviceType: deviceType,
               loggedin_on: new DateTime.now().millisecondsSinceEpoch.toString(),
               androidHash: "xdEGBTEgY7u")
           .toJson();
@@ -78,7 +89,13 @@ class MobileNumberState extends State<MobileNumber> {
               context,
               MaterialPageRoute(
                   builder: (context) => VerifyOtp(
-                      mobile: response.data, mobilenumber: myController.text)));
+                      fcmToken: fcmToken,
+                      deviceId: Platform.isAndroid
+                          ? androidInfo.androidId
+                          : iosDeviceInfo.identifierForVendor,
+                      deviceType: deviceType,
+                      mobile: response.data,
+                      mobileNumber: myController.text)));
         }
       }
     } else
@@ -94,6 +111,8 @@ class MobileNumberState extends State<MobileNumber> {
 
   @override
   Widget build(BuildContext context) {
+    _register();
+    print("Mobile Number build called");
     return Scaffold(
       body: Container(
         padding: new EdgeInsets.all(16),

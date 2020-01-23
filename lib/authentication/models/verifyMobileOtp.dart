@@ -2,20 +2,38 @@ class RequestBodyOtp {
   String id;
   String mobile;
   String otp;
+  String deviceId;
+  String deviceToken;
+  String deviceType;
+  String deviceLocation;
 
-  RequestBodyOtp({this.id, this.mobile, this.otp});
+  RequestBodyOtp(
+      {this.id,
+      this.mobile,
+      this.otp,
+      this.deviceId,
+      this.deviceToken,
+      this.deviceType,
+      this.deviceLocation});
 
   factory RequestBodyOtp.fromJson(Map<String, dynamic> json) =>
       new RequestBodyOtp(
-        id: json["id"],
-        mobile: json["mobile"],
-        otp: json['otp'],
-      );
+          id: json["id"],
+          mobile: json["mobile"],
+          otp: json['otp'],
+          deviceId: json['deviceId'],
+          deviceToken: json['deviceToken'],
+          deviceType: json['deviceType'],
+          deviceLocation: json['deviceLocation']);
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "mobile": mobile,
         "otp": otp,
+        "deviceId": deviceId,
+        "deviceToken": deviceToken,
+        "deviceType": deviceType,
+        "deviceLocation": deviceLocation,
       };
 }
 
@@ -45,7 +63,7 @@ class User {
   String id;
   String profilePicture;
   String mobile;
-  String status;
+  bool status;
   String lastName;
   String userLanguage;
   String firstName;

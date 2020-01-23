@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>385505440015-9qclqbqru1l011kuf3ptk963sjohknf9.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.385505440015-9qclqbqru1l011kuf3ptk963sjohknf9</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCgJgkjWtY-DJDLeUU29hdqLnnS101gqKs</string>
+	<key>GCM_SENDER_ID</key>
+	<string>385505440015</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>io.flutter.flutter.app</string>
+	<key>PROJECT_ID</key>
+	<string>bzinga-flutter</string>
+	<key>STORAGE_BUCKET</key>
+	<string>bzinga-flutter.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:385505440015:ios:cb43a85b3a8bd1ac3b4e7a</string>
+	<key>DATABASE_URL</key>
+	<string>https://bzinga-flutter.firebaseio.com</string>
+</dict>
+</plist>

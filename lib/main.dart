@@ -1,4 +1,5 @@
 import 'package:bzinga/authentication/MobileNumber.dart';
+import 'package:bzinga/tour/location_access.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: 'Gotham',
       ),
-      home: MobileNumber(),
+      home: LocationAccess(),
     );
   }
 }

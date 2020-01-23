@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "385505440015",
+    "firebase_url": "https://bzinga-flutter.firebaseio.com",
+    "project_id": "bzinga-flutter",
+    "storage_bucket": "bzinga-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:385505440015:android:42a738cb1fb914fb3b4e7a",
+        "android_client_info": {
+          "package_name": "com.example.bzinga"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "385505440015-tv6ssej5nvboh2eviuk1jtuu3hqip15o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjTvaAwpgGFtPKIwKEKPbighOqN11V2qo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "385505440015-tv6ssej5nvboh2eviuk1jtuu3hqip15o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

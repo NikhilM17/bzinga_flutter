@@ -1,20 +1,30 @@
 import 'dart:convert';
-
 import 'package:bzinga/authentication/models/verifyMobileOtp.dart';
 import 'package:bzinga/colors.dart';
 import 'package:bzinga/constants.dart';
+import 'package:bzinga/utils/sharedPrefs.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
-
 import 'models/registerMobileNumber.dart';
 
 class VerifyOtp extends StatefulWidget {
-  final String mobilenumber;
+  final String mobileNumber;
   final RegisterMobile mobile;
+  final String deviceId;
+  final String deviceType;
+  final String fcmToken;
 
-  VerifyOtp({Key key, this.mobile, this.mobilenumber = ''}) : super(key: key);
+  VerifyOtp(
+      {Key key,
+      this.mobile,
+      this.deviceType,
+      this.deviceId,
+      this.mobileNumber = '',
+      this.fcmToken})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -32,23 +42,35 @@ class VerifyOtpState extends State<VerifyOtp> {
     };
 
   void verifyOtpCall() async {
-    var requestBody;
+    String location = await SharedPrefs().getCity();
+    if (isAccepted) {
+      var requestBody = RequestBodyOtp(
+        id: widget.mobile.userId,
+        otp: otpController.text,
+        mobile: widget.mobileNumber,
+        deviceId: widget.deviceId,
+        deviceType: widget.deviceType,
+        deviceToken: "",
+        deviceLocation: location,
+      );
 
-    requestBody = RequestBodyOtp(
-      id: widget.mobile.userId,
-      otp: otpController.text,
-      mobile: widget.mobilenumber,
-    );
+      var url = Constants.VERIFY_OTP;
 
-    var url = Constants.VERIFY_OTP;
+      Response res = await http.post(url,
+          headers: {"Content-Type": "application/json"},
+          body: json.encode(requestBody));
 
-    Response res = await http.post(url,
-        headers: {"Content-Type": "application/json"},
-        body: json.encode(requestBody));
-
-    if (res.statusCode == 200) {
-      OtpResponse otpResponse = OtpResponse.fromJson(json.decode(res.body));
-      print(otpResponse);
+      if (res.statusCode == 200) {
+        print(json.decode(res.body));
+        OtpResponse otpResponse = OtpResponse.fromJson(json.decode(res.body));
+        Fluttertoast.showToast(
+            msg: 'Otp verification successfull', gravity: ToastGravity.BOTTOM);
+        print(otpResponse);
+      }
+    } else {
+      Fluttertoast.showToast(
+          msg: 'Please accept the terms and conditions of user',
+          gravity: ToastGravity.BOTTOM);
     }
   }
 
@@ -64,7 +86,7 @@ class VerifyOtpState extends State<VerifyOtp> {
                   style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
               Container(
                   padding: EdgeInsets.only(top: 12),
-                  child: Text(widget.mobilenumber)),
+                  child: Text(widget.mobileNumber)),
               Visibility(
                 child: Container(
                   padding: EdgeInsets.only(top: 24, left: 24, right: 24),
