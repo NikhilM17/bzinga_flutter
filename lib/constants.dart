@@ -9,4 +9,8 @@ class Constants {
 
   static const String VERIFY_OTP = BASE_URL + "api/v1/user/verifyotp";
 
+  static const TERMS_AND_CONDITIONS = BASE_URL + "api/v1/content/terms?lang=en";
+
+  static const AUCTIONS = BASE_URL + "api/v1/auctions";
+
 }

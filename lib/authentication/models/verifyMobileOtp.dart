@@ -38,7 +38,7 @@ class RequestBodyOtp {
 }
 
 class OtpResponse {
-  String status;
+  int status;
   String message;
   String token;
   User userDetails;
@@ -49,7 +49,9 @@ class OtpResponse {
       status: json["status"],
       message: json["message"],
       token: json['token'],
-      userDetails: User.fromJson(json["userDetails"]));
+      userDetails: json.containsKey("userDetails")
+          ? User.fromJson(json["userDetails"])
+          : null);
 
   Map<String, dynamic> toJson() => {
         "status": status,

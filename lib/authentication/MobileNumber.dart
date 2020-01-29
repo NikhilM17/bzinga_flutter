@@ -4,6 +4,7 @@ import 'package:bzinga/authentication/models/registerMobileNumber.dart';
 import 'package:bzinga/colors.dart';
 import 'package:bzinga/constants.dart';
 import 'package:bzinga/authentication/VerifyOtp.dart';
+import 'package:bzinga/widgets/loader.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ class MobileNumber extends StatefulWidget {
 
 class MobileNumberState extends State<MobileNumber> {
   var requestBody;
+  bool isLoading = false;
   final myController = TextEditingController();
   String fcmToken;
   String deviceType = Platform.isAndroid ? 'android' : 'ios';
@@ -81,25 +83,40 @@ class MobileNumberState extends State<MobileNumber> {
         headers: {"Content-Type": "application/json"},
         body: json.encode(requestBody));
     if (res.statusCode == 200) {
+      isLoading = false;
       MobileRegisterResponse response =
           MobileRegisterResponse.fromJson(json.decode(res.body));
       if (response != null) {
         if (response.status == 200 && response.data != null) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => VerifyOtp(
-                      fcmToken: fcmToken,
-                      deviceId: Platform.isAndroid
-                          ? androidInfo.androidId
-                          : iosDeviceInfo.identifierForVendor,
-                      deviceType: deviceType,
-                      mobile: response.data,
-                      mobileNumber: myController.text)));
+          setState(
+            () {
+              if (!isLoading) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => VerifyOtp(
+                        fcmToken: fcmToken,
+                        showNameText: response.data.requiredName,
+                        deviceId: Platform.isAndroid
+                            ? androidInfo.androidId
+                            : iosDeviceInfo.identifierForVendor,
+                        deviceType: deviceType,
+                        mobile: response.data,
+                        mobileNumber: myController.text),
+                  ),
+                );
+              }
+            },
+          );
         }
       }
-    } else
-      print(res.statusCode.toString() + " : failed");
+    } else {
+      setState(() {
+        isLoading = false;
+        print(res.statusCode.toString() + " : failed");
+      });
+    }
+//    isLoading = false;
 
     /*List<RegisterMobile> languageData = MobileRegisterResponse.fromJson(data).data;
      if (languageData != null) {
@@ -114,61 +131,86 @@ class MobileNumberState extends State<MobileNumber> {
     _register();
     print("Mobile Number build called");
     return Scaffold(
-      body: Container(
-        padding: new EdgeInsets.all(16),
-        child: Column(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(top: 120),
-              child: //TextWidget(content: 'Enter your mobile number')
-                  Text(
-                'Enter your mobile number',
-                style: TextStyle(
-                  fontWeight: FontWeight.w900,
-                  fontSize: 18,
-                ),
-              ),
-            ),
-            Container(
-              padding: new EdgeInsets.only(top: 10),
-              child: TextField(
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.number,
-                inputFormatters: <TextInputFormatter>[
-                  WhitelistingTextInputFormatter.digitsOnly,
+      resizeToAvoidBottomPadding: false,
+      body: Stack(
+        children: <Widget>[
+          Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              padding: new EdgeInsets.all(24),
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.only(top: 120),
+                    child: //TextWidget(content: 'Enter your mobile number')
+                        Text(
+                      'Enter your mobile number',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: new EdgeInsets.only(top: 10),
+                    child: TextField(
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        WhitelistingTextInputFormatter.digitsOnly,
+                      ],
+                      controller: myController,
+                      maxLength: 10,
+                      style: TextStyle(fontWeight: FontWeight.w900),
+                      decoration: InputDecoration(
+                          border: new UnderlineInputBorder(
+                              borderSide:
+                                  new BorderSide(color: CustomColor.underline)),
+                          counterText: "",
+                          hintText: "Enter Mobile number",
+                          hintStyle: TextStyle(
+                              fontSize: 16,
+                              color: CustomColor.hintColor,
+                              fontWeight: FontWeight.w900)),
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(top: 8, bottom: 24),
+                    child: Text('We never share your number with anyone.'),
+                  ),
+                  Container(
+                    width: 250,
+                    padding: EdgeInsets.only(left: 24, right: 24, top: 24),
+                    child: RaisedButton(
+                      child: Text(
+                        'GET OTP',
+                        style: TextStyle(fontWeight: FontWeight.w900),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          isLoading = true;
+                          fetchDeviceInfo(Platform.isAndroid);
+                        });
+                      },
+                    ),
+                  ),
                 ],
-                controller: myController,
-                maxLength: 10,
-                style: TextStyle(fontWeight: FontWeight.w900),
-                decoration: InputDecoration(
-                    border: new UnderlineInputBorder(
-                        borderSide:
-                            new BorderSide(color: CustomColor.underline)),
-                    counterText: "",
-                    hintText: "Enter Mobile number",
-                    hintStyle: TextStyle(
-                        fontSize: 16,
-                        color: CustomColor.hintColor,
-                        fontWeight: FontWeight.w900)),
               ),
             ),
-            Container(
-              padding: EdgeInsets.only(top: 8, bottom: 24),
-              child: Text('We never share your number with anyone.'),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child:
+                Container(color: isLoading ? CustomColor.loader_screen : null),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Visibility(
+              visible: isLoading,
+              child: CircularProgressBar(),
             ),
-            Container(
-              width: 250,
-              padding: EdgeInsets.only(left: 24, right: 24, top: 24),
-              child: RaisedButton(
-                child: Text(
-                  'GET OTP',
-                  style: TextStyle(fontWeight: FontWeight.w900),
-                ),
-                onPressed: () => fetchDeviceInfo(Platform.isAndroid),
-              ),
-            ),
-          ],
-        ),
+          )
+        ],
       ),
     );
   }
