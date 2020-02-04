@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -16,9 +15,9 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Color(0xFF202329),
         accentColor: Colors.amber,
         brightness: Brightness.dark,
-        buttonColor: Color(0xFFF29F05),
-        primarySwatch: Colors.blue,
-        fontFamily: 'Gotham',
+        buttonTheme: ButtonThemeData(
+            textTheme: ButtonTextTheme.normal, buttonColor: Color(0xFFF29F05)),
+        fontFamily: 'Raleway',
       ),
       home: LocationAccess(),
     );

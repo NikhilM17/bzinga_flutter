@@ -4,6 +4,7 @@ import 'package:bzinga/authentication/models/registerMobileNumber.dart';
 import 'package:bzinga/colors.dart';
 import 'package:bzinga/constants.dart';
 import 'package:bzinga/authentication/VerifyOtp.dart';
+import 'package:bzinga/utils/network.dart';
 import 'package:bzinga/widgets/loader.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -75,46 +76,41 @@ class MobileNumberState extends State<MobileNumber> {
   }
 
   void registerMobileNumber() async {
-    var url = Constants.REGISTER_MOBILE_NUMBER;
-
     print(json.encode(requestBody));
 
-    Response res = await http.post(url,
-        headers: {"Content-Type": "application/json"},
-        body: json.encode(requestBody));
-    if (res.statusCode == 200) {
-      isLoading = false;
+    String res = await HttpClientHelper()
+        .postRegisterMobileNumber(json.encode(requestBody));
+    if (res != null && res.isNotEmpty) {
       MobileRegisterResponse response =
-          MobileRegisterResponse.fromJson(json.decode(res.body));
-      if (response != null) {
-        if (response.status == 200 && response.data != null) {
-          setState(
-            () {
-              if (!isLoading) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => VerifyOtp(
-                        fcmToken: fcmToken,
-                        showNameText: response.data.requiredName,
-                        deviceId: Platform.isAndroid
-                            ? androidInfo.androidId
-                            : iosDeviceInfo.identifierForVendor,
-                        deviceType: deviceType,
-                        mobile: response.data,
-                        mobileNumber: myController.text),
-                  ),
-                );
-              }
-            },
-          );
-        }
+          MobileRegisterResponse.fromJson(json.decode(res));
+      if (response != null && response.data != null) {
+        setState(
+          () {
+            isLoading = false;
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => VerifyOtp(
+                    fcmToken: fcmToken,
+                    showNameText: response.data.requiredName,
+                    deviceId: Platform.isAndroid
+                        ? androidInfo.androidId
+                        : iosDeviceInfo.identifierForVendor,
+                    deviceType: deviceType,
+                    mobile: response.data,
+                    mobileNumber: myController.text),
+              ),
+            );
+          },
+        );
+      } else {
+        setState(() {
+          isLoading = false;
+          if(response != null && response.message != null)
+
+          print("failed");
+        });
       }
-    } else {
-      setState(() {
-        isLoading = false;
-        print(res.statusCode.toString() + " : failed");
-      });
     }
 //    isLoading = false;
 

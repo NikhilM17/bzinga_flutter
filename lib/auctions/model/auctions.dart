@@ -6,21 +6,30 @@ class AuctionResponse {
 
   factory AuctionResponse.fromJson(Map<String, dynamic> json) =>
       new AuctionResponse(
-          status: json['status'], data: Data.fromJson(json['data']));
+        status: json['status'],
+        data: Data.fromJson(json['data']),
+      );
 }
 
 class Auction {
   String id;
   String auctionStartTime;
   String auctionEndTime;
+  String showId;
   Product product;
 
-  Auction({this.id, this.auctionStartTime, this.auctionEndTime, this.product});
+  Auction(
+      {this.id,
+      this.auctionStartTime,
+      this.auctionEndTime,
+      this.showId,
+      this.product});
 
   factory Auction.fromJson(Map<String, dynamic> json) => new Auction(
       id: json['id'],
       auctionStartTime: json['auctionStartTime'],
       auctionEndTime: json['auctionEndTime'],
+      showId: json['showId'],
       product: Product.fromJson(json['product']));
 }
 
@@ -46,7 +55,7 @@ class Data {
   Data({this.auctions});
 
   factory Data.fromJson(Map<String, dynamic> resMap) => new Data(
-        auctions: (resMap['auctions'] as List)
+        auctions: (resMap.length > 0 ? resMap['auctions'] as List : new List())
             .map((model) => Auction.fromJson(model))
             .toList(),
       );

@@ -18,16 +18,20 @@ class RegisterMobile {
 
 class MobileRegisterResponse {
   int status;
+  String message;
   RegisterMobile data;
 
 //  List<RegisterMobile> data;
 
-  MobileRegisterResponse({this.status, this.data});
+  MobileRegisterResponse({this.status, this.message, this.data});
 
   factory MobileRegisterResponse.fromJson(Map<String, dynamic> resMap) =>
       new MobileRegisterResponse(
         status: resMap["status"],
-        data: RegisterMobile.fromJson(resMap["data"]),
+        message: resMap.containsKey('message') ? resMap["message"] : "",
+        data: resMap.containsKey('data')
+            ? RegisterMobile.fromJson(resMap["data"])
+            : null,
       );
 
   /*factory MobileRegisterResponse.fromJson(Map<String, dynamic> resMap) =>

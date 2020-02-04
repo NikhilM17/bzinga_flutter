@@ -38,6 +38,7 @@ class LocationAccessState extends State<LocationAccess> {
       bool isLoggedIn = token != null && token.isNotEmpty;
 
       if (!isLoggedIn) {
+//      if (isLoggedIn) {
         currentLocation = await location.getLocation();
         _getAddressFromLatLng(
             currentLocation.latitude, currentLocation.longitude);

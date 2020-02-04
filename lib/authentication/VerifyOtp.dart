@@ -4,6 +4,7 @@ import 'package:bzinga/menus/terms_and_conditions.dart';
 import 'package:bzinga/authentication/models/verifyMobileOtp.dart';
 import 'package:bzinga/colors.dart';
 import 'package:bzinga/constants.dart';
+import 'package:bzinga/utils/network.dart';
 import 'package:bzinga/utils/sharedPrefs.dart';
 import 'package:bzinga/widgets/loader.dart';
 import 'package:flutter/gestures.dart';
@@ -47,53 +48,6 @@ class VerifyOtpState extends State<VerifyOtp> {
       print("Clicked GET OTP");
     };
 
-  void verifyOtpCall() async {
-    String location = await SharedPrefs().getCity();
-    if (isAccepted) {
-      var requestBody = RequestBodyOtp(
-        id: widget.mobile.userId,
-        otp: otpController.text,
-        mobile: widget.mobileNumber,
-        deviceId: widget.deviceId,
-        deviceType: widget.deviceType,
-        deviceToken: "",
-        deviceLocation: location,
-      );
-
-      var url = Constants.VERIFY_OTP;
-
-      Response res = await http.post(url,
-          headers: {"Content-Type": "application/json"},
-          body: json.encode(requestBody));
-
-      if (res.statusCode == 200) {
-        setState(() {
-          isLoading = false;
-          print(json.decode(res.body));
-          OtpResponse otpResponse = OtpResponse.fromJson(json.decode(res.body));
-          if (otpResponse != null) {
-            SharedPrefs.saveToken(otpResponse.token);
-            Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => Auctions()));
-            ;
-          } else if (otpResponse == null) {
-            showToast(otpResponse.message + "");
-          }
-          print(otpResponse);
-        });
-      }
-    } else {
-      setState(() {
-        isLoading = false;
-        showToast('Please accept the terms and conditions of user');
-      });
-    }
-  }
-
-  void showToast(String mesg) {
-    Fluttertoast.showToast(msg: mesg, gravity: ToastGravity.BOTTOM);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,7 +75,7 @@ class VerifyOtpState extends State<VerifyOtp> {
                           decoration: InputDecoration(
                               hintText: 'Enter your name',
                               hintStyle:
-                                  TextStyle(color: CustomColor.hintColor)),
+                              TextStyle(color: CustomColor.hintColor)),
                         ),
                       ),
                     ),
@@ -205,7 +159,7 @@ class VerifyOtpState extends State<VerifyOtp> {
           Align(
             alignment: Alignment.center,
             child:
-                Container(color: isLoading ? CustomColor.loader_screen : null),
+            Container(color: isLoading ? CustomColor.loader_screen : null),
           ),
           Align(
             alignment: Alignment.center,
@@ -218,4 +172,48 @@ class VerifyOtpState extends State<VerifyOtp> {
       ),
     );
   }
+  void verifyOtpCall() async {
+    String location = await SharedPrefs().getCity();
+    if (isAccepted) {
+      var requestBody = RequestBodyOtp(
+        id: widget.mobile.userId,
+        otp: otpController.text,
+        mobile: widget.mobileNumber,
+        deviceId: widget.deviceId,
+        deviceType: widget.deviceType,
+        deviceToken: "",
+        deviceLocation: location,
+      );
+
+      String response =
+          await HttpClientHelper().verifyOTP(json.encode(requestBody));
+
+      if (response != null && response.isNotEmpty) {
+        setState(() {
+          isLoading = false;
+          print(json.decode(response));
+          OtpResponse otpResponse = OtpResponse.fromJson(json.decode(response));
+          if (otpResponse != null && otpResponse.userDetails != null) {
+            SharedPrefs.saveToken(otpResponse.token);
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => Auctions()));
+            ;
+          } else if (otpResponse != null) {
+            showToast(otpResponse.message);
+          }
+          print(otpResponse);
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+          showToast('Please accept the terms and conditions of user');
+        });
+      }
+    }
+  }
+
+  void showToast(String mesg) {
+    Fluttertoast.showToast(msg: mesg, gravity: ToastGravity.BOTTOM);
+  }
+
 }

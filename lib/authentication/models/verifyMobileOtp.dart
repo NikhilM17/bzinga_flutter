@@ -47,7 +47,7 @@ class OtpResponse {
 
   factory OtpResponse.fromJson(Map<String, dynamic> json) => new OtpResponse(
       status: json["status"],
-      message: json["message"],
+      message: json.containsKey('message') ? json["message"] : "",
       token: json['token'],
       userDetails: json.containsKey("userDetails")
           ? User.fromJson(json["userDetails"])
