@@ -4,7 +4,7 @@ import 'package:bzinga/authentication/models/registerMobileNumber.dart';
 import 'package:bzinga/colors.dart';
 import 'package:bzinga/constants.dart';
 import 'package:bzinga/authentication/VerifyOtp.dart';
-import 'package:bzinga/utils/network.dart';
+import 'package:bzinga/network/network.dart';
 import 'package:bzinga/widgets/loader.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -78,42 +78,35 @@ class MobileNumberState extends State<MobileNumber> {
   void registerMobileNumber() async {
     print(json.encode(requestBody));
 
-    String res = await HttpClientHelper()
+    MobileRegisterResponse response = await HttpClientHelper()
         .postRegisterMobileNumber(json.encode(requestBody));
-    if (res != null && res.isNotEmpty) {
-      MobileRegisterResponse response =
-          MobileRegisterResponse.fromJson(json.decode(res));
-      if (response != null && response.data != null) {
-        setState(
-          () {
-            isLoading = false;
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => VerifyOtp(
-                    fcmToken: fcmToken,
-                    showNameText: response.data.requiredName,
-                    deviceId: Platform.isAndroid
-                        ? androidInfo.androidId
-                        : iosDeviceInfo.identifierForVendor,
-                    deviceType: deviceType,
-                    mobile: response.data,
-                    mobileNumber: myController.text),
-              ),
-            );
-          },
-        );
-      } else {
-        setState(() {
+    if (response != null && response.data != null) {
+      setState(
+        () {
           isLoading = false;
-          if(response != null && response.message != null)
-
-          print("failed");
-        });
-      }
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => VerifyOtp(
+                  fcmToken: fcmToken,
+                  showNameText: response.data.requiredName,
+                  deviceId: Platform.isAndroid
+                      ? androidInfo.androidId
+                      : iosDeviceInfo.identifierForVendor,
+                  deviceType: deviceType,
+                  mobile: response.data,
+                  mobileNumber: myController.text),
+            ),
+          );
+        },
+      );
+    } else {
+      setState(() {
+        isLoading = false;
+        if (response != null && response.message != null) print("failed");
+      });
     }
 //    isLoading = false;
-
     /*List<RegisterMobile> languageData = MobileRegisterResponse.fromJson(data).data;
      if (languageData != null) {
       for (RegisterMobile languages in languageData) {

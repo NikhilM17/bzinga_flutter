@@ -4,7 +4,7 @@ import 'package:bzinga/menus/terms_and_conditions.dart';
 import 'package:bzinga/authentication/models/verifyMobileOtp.dart';
 import 'package:bzinga/colors.dart';
 import 'package:bzinga/constants.dart';
-import 'package:bzinga/utils/network.dart';
+import 'package:bzinga/network/network.dart';
 import 'package:bzinga/utils/sharedPrefs.dart';
 import 'package:bzinga/widgets/loader.dart';
 import 'package:flutter/gestures.dart';

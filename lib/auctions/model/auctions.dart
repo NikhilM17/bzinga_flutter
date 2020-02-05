@@ -1,13 +1,15 @@
 class AuctionResponse {
   int status;
-  Data data;
+  AuctionsData data;
 
   AuctionResponse({this.status, this.data});
 
   factory AuctionResponse.fromJson(Map<String, dynamic> json) =>
       new AuctionResponse(
         status: json['status'],
-        data: Data.fromJson(json['data']),
+        data: json.containsKey('data')
+            ? AuctionsData.fromJson(json['data'])
+            : null,
       );
 }
 
@@ -49,12 +51,13 @@ class Product {
       productImage: json['productImage']);
 }
 
-class Data {
+class AuctionsData {
   List<Auction> auctions;
 
-  Data({this.auctions});
+  AuctionsData({this.auctions});
 
-  factory Data.fromJson(Map<String, dynamic> resMap) => new Data(
+  factory AuctionsData.fromJson(Map<String, dynamic> resMap) =>
+      new AuctionsData(
         auctions: (resMap.length > 0 ? resMap['auctions'] as List : new List())
             .map((model) => Auction.fromJson(model))
             .toList(),

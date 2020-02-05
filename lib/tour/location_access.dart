@@ -1,14 +1,14 @@
 import 'package:bzinga/auctions/auctions_list.dart';
+import 'package:bzinga/auctions/view_models/auctions_view_model.dart';
 import 'package:bzinga/authentication/MobileNumber.dart';
-import 'package:bzinga/menus/terms_and_conditions.dart';
 import 'package:bzinga/colors.dart';
 import 'package:bzinga/fonts.dart';
+import 'package:bzinga/network/apis.dart';
+import 'package:bzinga/network/network.dart';
 import 'package:bzinga/utils/sharedPrefs.dart';
 import 'package:bzinga/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
-import 'package:loading/indicator/ball_scale_indicator.dart';
-import 'package:loading/loading.dart';
 import 'package:location/location.dart';
 
 class LocationAccess extends StatefulWidget {
@@ -20,6 +20,7 @@ class LocationAccess extends StatefulWidget {
 
 class LocationAccessState extends State<LocationAccess> {
   bool isLoading = false;
+  AuctionsViewModel model = AuctionsViewModel(auctionsApi: HttpClientHelper());
 
   @override
   initState() {
@@ -44,7 +45,9 @@ class LocationAccessState extends State<LocationAccess> {
             currentLocation.latitude, currentLocation.longitude);
       } else {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => Auctions()));
+            context,
+            MaterialPageRoute(
+                builder: (context) => Auctions(viewModel: model)));
       }
     } catch (e) {
       if (e.code == 'PERMISSION_DENIED') {
