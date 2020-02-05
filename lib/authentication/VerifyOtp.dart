@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:bzinga/auctions/auctions_list.dart';
+import 'package:bzinga/auctions/auctions_main.dart';
 import 'package:bzinga/menus/terms_and_conditions.dart';
 import 'package:bzinga/authentication/models/verifyMobileOtp.dart';
 import 'package:bzinga/colors.dart';

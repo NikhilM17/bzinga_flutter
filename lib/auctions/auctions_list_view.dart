@@ -1,4 +1,4 @@
-import 'package:bzinga/auctions/auctions_list.dart';
+import 'package:bzinga/auctions/auctions_main.dart';
 import 'package:bzinga/auctions/model/auctions.dart';
 import 'package:bzinga/auctions/tabs/range_bid.dart';
 import 'package:bzinga/auctions/tabs/single_bid.dart';

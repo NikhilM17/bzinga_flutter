@@ -1,4 +1,4 @@
-import 'package:bzinga/auctions/auctions_list.dart';
+import 'package:bzinga/auctions/auctions_main.dart';
 import 'package:bzinga/auctions/view_models/auctions_view_model.dart';
 import 'package:bzinga/authentication/MobileNumber.dart';
 import 'package:bzinga/colors.dart';
