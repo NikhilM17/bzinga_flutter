@@ -7,6 +7,7 @@ import 'package:bzinga/auctions/tabs/range_bid.dart';
 import 'package:bzinga/auctions/tabs/single_bid.dart';
 import 'package:bzinga/auctions/view_models/auctions_view_model.dart';
 import 'package:bzinga/network/network.dart';
+import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -40,7 +41,19 @@ class AuctionsState extends State<Auctions> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(title: Text('Auctions')),
-      body: ScopedModel<AuctionsViewModel>(
+      body: /*FlipCard(
+        flipOnTouch: true,
+        front: Center(
+          child: Container(
+              width: 200, height: 100, color: Colors.red, child: Text('Front')),
+        ),
+        back: Center(
+          child: Container(
+              width: 200, height: 100, color: Colors.blue, child: Text('Back')),
+        ),
+      ),
+    );*/
+    ScopedModel<AuctionsViewModel>(
         model: widget.viewModel,
         child: ScopedModelDescendant<AuctionsViewModel>(
           builder: (context, child, model) {
